@@ -758,18 +758,20 @@ function App() {
           ) : (
             <div className="selection-grid">
               {selectedChips.map(({ chip, cat }) => (
-                <button
-                  key={chip.id}
-                  type="button"
-                  className="selection-card"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => onToggle(chip.id)}
-                  title={`${chip.labelKo} 선택 해제`}
-                  aria-label={`${chip.labelKo} 제거`}
-                >
+                <div key={chip.id} className="selection-card">
+                  <button
+                    type="button"
+                    className="selection-remove"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => onToggle(chip.id)}
+                    title={`${chip.labelKo} 선택 해제`}
+                    aria-label={`${chip.labelKo} 제거`}
+                  >
+                    ×
+                  </button>
                   <ChipThumb chip={chip} catId={cat.id} />
                   <span className="selection-label">{chip.labelKo}</span>
-                </button>
+                </div>
               ))}
             </div>
           )}

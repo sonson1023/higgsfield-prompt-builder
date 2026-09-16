@@ -590,22 +590,43 @@
 }
 
 .selection-card {
-  appearance: none;
+  position: relative;
   border: 1px solid var(--border);
   background: var(--surface-2);
   border-radius: 0.55rem;
   padding: 0.35rem;
-  cursor: pointer;
   text-align: center;
   color: var(--text);
-  transition: border-color 0.15s, transform 0.1s;
   scroll-margin: 0;
-  touch-action: manipulation;
 }
 
-.selection-card:hover {
-  border-color: #f87171;
-  transform: translateY(-1px);
+.selection-remove {
+  appearance: none;
+  position: absolute;
+  top: 0.2rem;
+  right: 0.2rem;
+  z-index: 2;
+  width: 1.35rem;
+  height: 1.35rem;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(15, 12, 24, 0.82);
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.selection-remove:hover,
+.selection-remove:focus-visible {
+  background: #ef4444;
+  outline: none;
 }
 
 .selection-card .chip-thumb {
