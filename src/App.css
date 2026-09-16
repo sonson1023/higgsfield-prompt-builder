@@ -146,7 +146,32 @@
     color: var(--muted);
   }
 
-  .selection-preview.is-collapsed .selection-grid {
+  .selection-preview.is-collapsed 
+.selection-preview-actions {
+  display: flex;
+  gap: 0.35rem;
+  margin: 0 0 0.55rem;
+  flex-wrap: wrap;
+}
+
+.selection-preview-actions .btn {
+  flex: 1;
+  min-width: 0;
+  padding: 0.4rem 0.55rem;
+  font-size: 0.78rem;
+}
+
+.selection-preview-actions .btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.selection-delete {
+  border-color: rgba(248, 113, 113, 0.45) !important;
+  color: #fca5a5 !important;
+}
+
+.selection-grid {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;

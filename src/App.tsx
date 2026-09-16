@@ -241,6 +241,55 @@ function App() {
     showToast('전체 초기화됨');
   };
 
+  const clearSelection = () => {
+    if (selectedIds.length === 0) {
+      showToast('삭제할 선택이 없습니다');
+      return;
+    }
+    setSelectedIds([]);
+    setActivePreset(null);
+    showToast('선택 프리뷰 삭제됨');
+  };
+
+  const exportSelection = () => {
+    if (selectedChips.length === 0 && !result.primary.trim()) {
+      showToast('내보낼 선택이 없습니다');
+      return;
+    }
+    const chipLines = selectedChips
+      .map(({ chip, cat }) => `- [${cat.labelKo}] ${chip.labelKo} / ${chip.valueEn}`)
+      .join('\n');
+    const body = [
+      `# Higgsfield Prompt Export`,
+      `mode: ${mode}`,
+      `idea: ${ideaKo.trim() || '(none)'}`,
+      '',
+      '## Selected chips',
+      chipLines || '(none)',
+      '',
+      '## Image prompt',
+      result.imagePrompt || '(empty)',
+      '',
+      '## Video prompt',
+      result.videoPrompt || '(empty)',
+      '',
+      '## Primary',
+      result.primary || '(empty)',
+    ].join('\n');
+    const blob = new Blob([body], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+    a.href = url;
+    a.download = `higgsfield-prompt-${stamp}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    void navigator.clipboard?.writeText(result.primary || body).catch(() => {});
+    showToast('내보내기 완료 (파일 + 복사)');
+  };
+
   const applyPreset = (preset: Preset) => {
     setMode(preset.mode);
     setSelectedIds([...preset.chipIds]);
@@ -756,6 +805,25 @@ function App() {
               칩을 선택하면 여기에 미리보기가 모입니다
             </p>
           ) : (
+            <>
+            <div className="selection-preview-actions">
+              <button
+                type="button"
+                className="btn ghost selection-export"
+                onClick={exportSelection}
+                disabled={selectedChips.length === 0}
+              >
+                내보내기
+              </button>
+              <button
+                type="button"
+                className="btn ghost selection-delete"
+                onClick={clearSelection}
+                disabled={selectedChips.length === 0}
+              >
+                삭제
+              </button>
+            </div>
             <div className="selection-grid">
               {selectedChips.map(({ chip, cat }) => (
                 <div key={chip.id} className="selection-card">
@@ -764,8 +832,8 @@ function App() {
                     className="selection-remove"
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => onToggle(chip.id)}
-                    title={`${chip.labelKo} 선택 해제`}
-                    aria-label={`${chip.labelKo} 제거`}
+                    title={`${chip.labelKo} 삭제`}
+                    aria-label={`${chip.labelKo} 삭제`}
                   >
                     ×
                   </button>
@@ -774,6 +842,7 @@ function App() {
                 </div>
               ))}
             </div>
+            </>
           )}
         </aside>
       </main>
