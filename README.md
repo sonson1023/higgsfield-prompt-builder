@@ -2,58 +2,60 @@
 
 클릭으로 조합하는 **higgsfield.ai** 이미지·영상 프롬프트 생성기입니다.
 
-- UI 언어: **한국어**
-- 생성 프롬프트: **영어** (Higgsfield에 최적)
+- UI 언어: **한국어** / 생성 프롬프트: **영어**
 - 유명인·브랜드 로고·IP 명칭은 칩/출력에 포함하지 않습니다.
+- Shorts/Reels · 제품·광고 · 시네마틱/MV 세로를 모두 커버하는 풍부한 칩 라이브러리
 
 ## 빠른 시작
 
 ```bash
-cd /workspace/higgsfield-prompt-builder
+cd higgsfield-prompt-builder
 npm install
 npm run dev
 ```
-
-브라우저에서 표시되는 주소(기본 `http://localhost:5173`)로 접속하세요.
 
 ### 스크립트
 
 | 명령 | 설명 |
 |------|------|
-| `npm run dev` | Vite 개발 서버 (HMR) |
+| `npm run dev` | Vite 개발 서버 |
 | `npm run build` | 타입체크 + 프로덕션 빌드 → `dist/` |
 | `npm run preview` | 빌드 결과 미리보기 |
-| `npm run lint` | oxlint (프로젝트 기본) |
+| `npm run lint` | oxlint |
 
-## 모드
+## 주요 기능
 
-1. **이미지** — Popcorn / 스틸·키프레임용 풀 프롬프트
-2. **영상** — Seedance / Kling / DoP 등 I2V용 모션 프롬프트 (동작·카메라·타이밍 중심)
-3. **캐릭터 베이스** — 스튜디오 포트레이트 스타터 (일관 캐릭터용)
+1. **모드** — 이미지 / 영상(I2V 모션 블록) / 캐릭터 베이스
+2. **칩 검색** — `/` 단축키, 필터 입력
+3. **시각 프리뷰** — 칩 호버·포커스 썸네일, 우측(모바일: 상단) **선택 프리뷰** 그리드
+4. **즐겨찾기·히스토리** — localStorage (최근 10개)
+5. **키프레임 → 영상** — 공유 칩 유지, 외형 칩 정리
+6. **레이어 태그·선택 필** — 구조 확인 및 빠른 해제
+7. **프리셋 19개+** — 패션·제품·뷰티·쇼츠·브이로그·MV·주얼리·드론 등
+8. **GitHub Pages** — `base: /higgsfield-prompt-builder/`, `main` 푸시 시 자동 배포
 
-## 사용 팁 (Higgsfield)
+## Higgsfield 팁
 
-1. **이미지 먼저** 생성한 뒤, 같은 키프레임으로 **영상(I2V)** 을 돌리세요.
-2. 영상 프롬프트는 **외형 재설명보다 동작·카메라 무브·타이밍·분위기**에 집중하세요.
-3. 피하기(Avoid)는 짧게 유지하세요.
-4. 추천 조립 순서 (이미지): 주제 → 디테일 → 환경 → 스타일 → 조명/카메라/무드 → 품질 → Avoid
-5. 프리셋(패션 룩북, 제품 쇼츠, 시네마틱 인물, 먹방/카페, 야경 도시, 자동차 시네마틱, 캐릭터 스튜디오)으로 빠르게 시작하세요.
+1. 이미지(키프레임) 먼저 → 같은 컷으로 영상(I2V)
+2. 영상 프롬프트는 **Action / Camera / Timing / Mood / Audio** 블록 중심
+3. 외형 재설명은 최소화, Avoid는 짧게
 
-## 프로젝트 구조
+## 구조
 
 ```
-src/
-  data/chips.ts      # 칩·카테고리·프리셋 데이터
-  lib/buildPrompt.ts # 순수 프롬프트 조립 로직
-  App.tsx            # UI
-  App.css / index.css
+src/data/chips.ts      # 칩·카테고리·프리셋
+src/data/previews.ts   # Unsplash / SVG 프리뷰 맵
+src/lib/buildPrompt.ts # 프롬프트 조립
+public/previews/       # 카메라·추상 SVG
 ```
+
+## 배포 (GitHub Pages)
+
+리포지토리 Settings → Pages → Source: **GitHub Actions**.  
+워크플로: `.github/workflows/deploy-pages.yml`
+
+공개 URL 예: `https://<user>.github.io/higgsfield-prompt-builder/`
 
 ## 기술 스택
 
-- Vite + React 19 + TypeScript
-- 정적 SPA (백엔드 없음)
-
-## 라이선스
-
-개인·학습·제작 워크플로용 도구입니다. Higgsfield 서비스 자체는 해당 플랫폼 약관을 따릅니다.
+Vite + React 19 + TypeScript · 정적 SPA

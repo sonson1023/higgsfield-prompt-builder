@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200" role="img">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1528"/>
+      <stop offset="100%" stop-color="#0f0d18"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect x="24" y="28" width="160" height="100" rx="8" fill="none" stroke="#a78bfa" stroke-width="2.5" opacity="0.9"/>
+  <path d="M40 90 Q120 40 200 90 Q250 120 290 70" fill="none" stroke="#ff4d8d" stroke-width="3"/><text x="160" y="180" fill="#8b879a" font-size="14" font-family="system-ui" text-anchor="middle">Soft Whip Pan</text>
+</svg>
