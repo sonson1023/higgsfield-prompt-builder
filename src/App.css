@@ -107,71 +107,83 @@
 
 @media (max-width: 960px) {
   .layout-with-preview {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
   }
 
-  /* Room for sticky copy bar only — preview is right rail, not bottom dock */
+  /* Hide top selected-pills — preview lives in right vertical panel */
+  .selected-pills {
+    display: none !important;
+  }
+
   .app.has-sel-preview {
     padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
-    padding-right: 2.75rem; /* collapsed rail peek */
+    padding-right: 2.75rem;
   }
   .app.has-sel-preview.sel-preview-open {
-    padding-right: min(48vw, 300px);
+    padding-right: min(52vw, 320px);
   }
 
   /*
-   * Mobile selection preview: RIGHT vertical panel (not bottom dock).
-   * Collapsed = slim edge tab; open = full vertical drawer.
+   * CRITICAL: full-height RIGHT vertical drawer.
+   * All key props use !important so later desktop .selection-preview
+   * (sticky/top/max-height) cannot override on mobile.
    */
   .selection-preview {
     position: fixed !important;
-    top: 3.6rem;
-    right: 0;
-    left: auto;
-    bottom: calc(3.35rem + env(safe-area-inset-bottom, 0px));
-    z-index: 48;
-    width: min(48vw, 300px);
-    max-height: none;
-    overflow-x: hidden;
-    overflow-y: auto;
+    top: 0 !important;
+    right: 0 !important;
+    left: auto !important;
+    bottom: calc(3.4rem + env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 60 !important;
+    width: min(52vw, 320px) !important;
+    max-width: min(52vw, 320px) !important;
+    max-height: none !important;
+    height: auto !important;
+    margin: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
     overscroll-behavior: contain;
-    border-radius: 1rem 0 0 1rem;
-    border: 1px solid var(--border);
-    border-right: none;
-    box-shadow: -10px 0 28px rgba(0, 0, 0, 0.35);
-    padding: 0.55rem 0.65rem 0.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
+    border-radius: 0 !important;
+    border: 1px solid var(--border) !important;
+    border-right: none !important;
+    box-shadow: -12px 0 32px rgba(0, 0, 0, 0.45) !important;
+    padding: calc(3.5rem + env(safe-area-inset-top, 0px)) 0.65rem 0.85rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.4rem !important;
+    background: var(--surface) !important;
   }
 
   .selection-preview.is-collapsed {
-    width: 2.55rem;
-    padding: 0.4rem 0.25rem;
-    align-items: center;
+    width: 2.65rem !important;
+    max-width: 2.65rem !important;
+    padding: calc(3.5rem + env(safe-area-inset-top, 0px)) 0.2rem 0.5rem !important;
+    align-items: center !important;
   }
 
   .selection-preview.is-open {
-    width: min(48vw, 300px);
+    width: min(52vw, 320px) !important;
+    max-width: min(52vw, 320px) !important;
   }
 
   .selection-preview-heading {
-    display: none;
+    display: none !important;
   }
 
   .selection-preview-toggle {
-    display: flex;
+    display: flex !important;
     appearance: none;
     border: none;
-    background: transparent;
+    background: rgba(124, 92, 255, 0.12);
     color: inherit;
     align-items: center;
     justify-content: space-between;
     gap: 0.35rem;
-    padding: 0.2rem 0.15rem 0.35rem;
+    padding: 0.45rem 0.4rem;
     cursor: pointer;
     width: 100%;
     flex-shrink: 0;
+    border-radius: 0.55rem;
   }
 
   .selection-preview.is-collapsed .selection-preview-toggle {
@@ -179,24 +191,22 @@
     text-orientation: mixed;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    flex: 1;
     width: 100%;
-    padding: 0.5rem 0;
-    gap: 0.65rem;
+    min-height: 12rem;
+    padding: 0.75rem 0;
+    gap: 0.75rem;
+    border-radius: 0.75rem;
   }
 
   .selection-preview.is-collapsed .selection-preview-toggle .section-title {
     font-size: 0.72rem;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
   }
 
   .selection-preview-chevron {
-    font-size: 0.85rem;
-    color: var(--muted);
-  }
-
-  .selection-preview.is-collapsed .selection-preview-chevron {
-    transform: rotate(-90deg);
+    font-size: 0.9rem;
+    color: #c4b5fd;
   }
 
   .selection-preview.is-collapsed .selection-preview-actions,
@@ -207,46 +217,39 @@
   }
 
   .selection-preview.is-open .selection-hero {
-    display: block;
+    display: block !important;
+    flex-shrink: 0;
   }
 
   .selection-preview.is-open .selection-hero .chip-thumb {
-    height: 8.5rem;
+    height: 9rem !important;
   }
 
   .selection-preview .selection-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-    overflow: visible;
-    max-height: none;
-    flex: 1;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.55rem !important;
+    overflow: visible !important;
+    max-height: none !important;
+    flex: 1 1 auto;
   }
 
   .selection-preview .selection-card {
-    width: 100%;
-    flex: none;
-    padding: 0.3rem;
+    width: 100% !important;
+    flex: none !important;
   }
 
   .selection-preview.is-open .selection-card .chip-thumb {
-    height: 5.25rem;
-    margin-bottom: 0.25rem;
+    height: 5.75rem !important;
   }
 
   .selection-preview.is-open .selection-label {
-    display: block;
+    display: block !important;
     font-size: 0.72rem;
   }
 
-  .selection-preview .selection-empty {
-    display: block;
-    font-size: 0.72rem;
-  }
-
-  /* Hide panel when nothing selected on mobile */
   .app:not(.has-sel-preview) .selection-preview {
-    display: none;
+    display: none !important;
   }
 }
 
@@ -612,18 +615,20 @@
   background: linear-gradient(135deg, #3b2a6e, #7c5cff);
 }
 
-/* Selection preview sidebar (desktop sticky) */
-.selection-preview {
-  position: sticky;
-  top: 4.5rem;
-  padding: 0.85rem;
-  border-radius: 1rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  max-height: calc(100svh - 6rem);
-  max-height: calc(100dvh - 6rem);
-  overflow-y: auto;
-  overscroll-behavior: contain;
+/* Selection preview sidebar — DESKTOP ONLY (do not override mobile fixed rail) */
+@media (min-width: 961px) {
+  .selection-preview {
+    position: sticky;
+    top: 4.5rem;
+    padding: 0.85rem;
+    border-radius: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    max-height: calc(100svh - 6rem);
+    max-height: calc(100dvh - 6rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
 }
 
 .selection-empty {

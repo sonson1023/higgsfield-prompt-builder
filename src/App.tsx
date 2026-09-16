@@ -110,7 +110,7 @@ function App() {
     below?: boolean;
   } | null>(null);
   /** Mobile selection preview strip expand (default collapsed → one compact row) */
-  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(true);
   const searchRef = useRef<HTMLInputElement>(null);
 
   const clearTips = useCallback(() => {
@@ -799,7 +799,9 @@ function App() {
           </footer>
         </div>
 
-        {/* Sticky selection preview — sidebar on desktop, bottom dock on mobile */}
+      </main>
+
+        {/* Selection preview — desktop sticky sidebar / mobile right vertical rail */}
         <aside
           className={`selection-preview${previewOpen ? ' is-open' : ' is-collapsed'}`}
           aria-label="선택 프리뷰"
@@ -873,7 +875,7 @@ function App() {
             </>
           )}
         </aside>
-      </main>
+
 
       <div className="sticky-bar" role="region" aria-label="빠른 복사">
         <div className="sticky-inner">
