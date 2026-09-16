@@ -7,11 +7,15 @@
 const U = (id: string, extra = '') =>
   `https://images.unsplash.com/${id}?w=400&q=80&auto=format&fit=crop${extra}`;
 
-const base = () =>
-  (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) ||
-  '/higgsfield-prompt-builder/';
+const base = () => {
+  const raw =
+    (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) ||
+    '/higgsfield-prompt-builder/';
+  return raw.endsWith('/') ? raw : `${raw}/`;
+};
 
-const local = (path: string) => `${base()}${path.replace(/^\//, '')}`;
+/** Join BASE_URL + relative path without double slashes (GitHub Pages safe) */
+const local = (path: string) => `${base()}${path.replace(/^\/+/, '')}`;
 
 export interface PreviewMeta {
   previewUrl?: string;

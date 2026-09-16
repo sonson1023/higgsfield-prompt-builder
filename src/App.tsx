@@ -7,6 +7,26 @@ import {
   type MouseEvent,
   type FocusEvent,
 } from 'react';
+
+/** Desktop hover only — skip sticky tooltips on touch / coarse pointers */
+function canFinePointer(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    window.matchMedia('(hover: hover) and (pointer: fine)').matches
+  );
+}
+
+function clampTipPos(x: number, y: number): { x: number; y: number; below: boolean } {
+  const tipW = 170;
+  const tipH = 150;
+  const pad = 8;
+  const cx = Math.min(Math.max(x, tipW / 2 + pad), window.innerWidth - tipW / 2 - pad);
+  const below = y < tipH + pad;
+  const cy = below
+    ? Math.min(y + 12, window.innerHeight - tipH - pad)
+    : Math.max(y, tipH + pad);
+  return { x: cx, y: cy, below };
+}
 import {
   CATEGORIES,
   PRESETS,
@@ -80,14 +100,23 @@ function App() {
     cat: ChipCategory;
     x: number;
     y: number;
+    below?: boolean;
   } | null>(null);
   const [presetHover, setPresetHover] = useState<{
     id: string;
     label: string;
     x: number;
     y: number;
+    below?: boolean;
   } | null>(null);
+  /** Mobile selection preview strip expand (default collapsed → one compact row) */
+  const [previewOpen, setPreviewOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
+
+  const clearTips = useCallback(() => {
+    setHoverPreview(null);
+    setPresetHover(null);
+  }, []);
 
   const visibleCategories = useMemo(
     () => categoriesForMode(mode),
@@ -187,9 +216,20 @@ function App() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  useEffect(() => {
+    const clear = () => clearTips();
+    window.addEventListener('scroll', clear, { passive: true, capture: true });
+    document.addEventListener('touchstart', clear, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', clear, true);
+      document.removeEventListener('touchstart', clear);
+    };
+  }, [clearTips]);
+
   const onToggle = (chipId: string) => {
     setSelectedIds((prev) => toggleChip(prev, chipId));
     setActivePreset(null);
+    clearTips();
   };
 
   const onReset = () => {
@@ -207,6 +247,7 @@ function App() {
     setIdeaKo(preset.ideaKo ?? '');
     setCustomEn(preset.customEn ?? '');
     setActivePreset(preset.id);
+    clearTips();
     showToast(`프리셋 적용: ${preset.labelKo}`);
   };
 
@@ -288,6 +329,7 @@ function App() {
     setMode('video');
     setSelectedIds((prev) => switchToVideoKeepingShared(prev));
     setActivePreset(null);
+    clearTips();
     showToast('키프레임 → 영상: 외형 칩 정리, 공유 칩 유지');
   };
 
@@ -296,13 +338,33 @@ function App() {
     chip: Chip,
     cat: ChipCategory,
   ) => {
+    if (!canFinePointer()) return;
     const el = e.currentTarget as HTMLElement;
     const r = el.getBoundingClientRect();
+    const pos = clampTipPos(r.left + r.width / 2, r.top);
     setHoverPreview({
       chip,
       cat,
-      x: Math.min(r.left + r.width / 2, window.innerWidth - 100),
-      y: r.top,
+      x: pos.x,
+      y: pos.y,
+      below: pos.below,
+    });
+  };
+
+  const showPresetTip = (
+    e: MouseEvent | FocusEvent,
+    id: string,
+    label: string,
+  ) => {
+    if (!canFinePointer()) return;
+    const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const pos = clampTipPos(r.left + r.width / 2, r.top);
+    setPresetHover({
+      id,
+      label,
+      x: pos.x,
+      y: pos.y,
+      below: pos.below,
     });
   };
 
@@ -315,7 +377,9 @@ function App() {
         : '이미지 프롬프트';
 
   return (
-    <div className="app">
+    <div
+      className={`app${selectedChips.length > 0 ? ' has-sel-preview' : ''}${previewOpen ? ' sel-preview-open' : ''}`}
+    >
       <header className="header">
         <div className="header-inner">
           <div className="brand">
@@ -445,6 +509,7 @@ function App() {
                   onClick={() => {
                     setMode(tab.id);
                     setActivePreset(null);
+                    clearTips();
                   }}
                 >
                   <span className="seg-label">{tab.label}</span>
@@ -471,30 +536,13 @@ function App() {
                   key={p.id}
                   type="button"
                   className={`preset-chip ${activePreset === p.id ? 'active' : ''}`}
-                  onClick={() => applyPreset(p)}
-                  onMouseEnter={(e) => {
-                    const r = (
-                      e.currentTarget as HTMLElement
-                    ).getBoundingClientRect();
-                    setPresetHover({
-                      id: p.id,
-                      label: p.labelKo,
-                      x: r.left + r.width / 2,
-                      y: r.top,
-                    });
+                  onClick={() => {
+                    applyPreset(p);
+                    clearTips();
                   }}
+                  onMouseEnter={(e) => showPresetTip(e, p.id, p.labelKo)}
                   onMouseLeave={() => setPresetHover(null)}
-                  onFocus={(e) => {
-                    const r = (
-                      e.currentTarget as HTMLElement
-                    ).getBoundingClientRect();
-                    setPresetHover({
-                      id: p.id,
-                      label: p.labelKo,
-                      x: r.left + r.width / 2,
-                      y: r.top,
-                    });
-                  }}
+                  onFocus={(e) => showPresetTip(e, p.id, p.labelKo)}
                   onBlur={() => setPresetHover(null)}
                 >
                   {p.labelKo}
@@ -684,9 +732,25 @@ function App() {
           </footer>
         </div>
 
-        {/* Sticky selection preview panel */}
-        <aside className="selection-preview" aria-label="선택 프리뷰">
-          <h2 className="section-title">선택 프리뷰</h2>
+        {/* Sticky selection preview — sidebar on desktop, bottom dock on mobile */}
+        <aside
+          className={`selection-preview${previewOpen ? ' is-open' : ' is-collapsed'}`}
+          aria-label="선택 프리뷰"
+        >
+          <button
+            type="button"
+            className="selection-preview-toggle"
+            aria-expanded={previewOpen}
+            onClick={() => setPreviewOpen((v) => !v)}
+          >
+            <span className="section-title" style={{ margin: 0 }}>
+              선택 프리뷰 ({selectedChips.length})
+            </span>
+            <span className="selection-preview-chevron" aria-hidden>
+              {previewOpen ? '▾' : '▴'}
+            </span>
+          </button>
+          <h2 className="section-title selection-preview-heading">선택 프리뷰</h2>
           {selectedChips.length === 0 ? (
             <p className="selection-empty">
               칩을 선택하면 여기에 미리보기가 모입니다
@@ -698,6 +762,7 @@ function App() {
                   key={chip.id}
                   type="button"
                   className="selection-card"
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => onToggle(chip.id)}
                   title={`${chip.labelKo} 선택 해제`}
                   aria-label={`${chip.labelKo} 제거`}
@@ -741,12 +806,13 @@ function App() {
           cat={hoverPreview.cat}
           x={hoverPreview.x}
           y={hoverPreview.y}
+          below={hoverPreview.below}
         />
       )}
 
       {presetHover && PRESET_COVERS[presetHover.id] && (
         <div
-          className="float-preview preset-float"
+          className={`float-preview preset-float${presetHover.below ? ' float-below' : ''}`}
           style={{
             left: presetHover.x,
             top: presetHover.y,
@@ -822,11 +888,13 @@ function ChipTooltip({
   cat,
   x,
   y,
+  below,
 }: {
   chip: Chip;
   cat: ChipCategory;
   x: number;
   y: number;
+  below?: boolean;
 }) {
   const meta = resolvePreview(
     chip.id,
@@ -836,7 +904,7 @@ function ChipTooltip({
   );
   return (
     <div
-      className="float-preview chip-float"
+      className={`float-preview chip-float${below ? ' float-below' : ''}`}
       style={{ left: x, top: y }}
       role="tooltip"
     >
