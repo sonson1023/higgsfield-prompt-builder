@@ -149,6 +149,12 @@ function App() {
       .filter(Boolean) as { chip: Chip; cat: ChipCategory }[];
   }, [selectedIds]);
 
+  const lastSelectedChip = useMemo(() => {
+    if (selectedIds.length === 0) return null;
+    const lastId = selectedIds[selectedIds.length - 1];
+    return selectedChips.find((x) => x.chip.id === lastId) ?? selectedChips[selectedChips.length - 1] ?? null;
+  }, [selectedIds, selectedChips]);
+
   const filteredCategories = useMemo(() => {
     const q = chipQuery.trim().toLowerCase();
     if (!q) return visibleCategories;
@@ -800,6 +806,16 @@ function App() {
             </span>
           </button>
           <h2 className="section-title selection-preview-heading">선택 프리뷰</h2>
+          {lastSelectedChip && (
+            <div className="selection-hero" aria-label="최근 선택 미리보기">
+              <ChipThumb chip={lastSelectedChip.chip} catId={lastSelectedChip.cat.id} />
+              <div className="selection-hero-meta">
+                <span className="selection-hero-cat">{lastSelectedChip.cat.labelKo}</span>
+                <span className="selection-hero-label">{lastSelectedChip.chip.labelKo}</span>
+                <span className="selection-hero-en">{lastSelectedChip.chip.valueEn}</span>
+              </div>
+            </div>
+          )}
           {selectedChips.length === 0 ? (
             <p className="selection-empty">
               칩을 선택하면 여기에 미리보기가 모입니다
