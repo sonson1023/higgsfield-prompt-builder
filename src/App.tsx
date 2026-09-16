@@ -233,7 +233,19 @@ function App() {
   }, [clearTips]);
 
   const onToggle = (chipId: string) => {
-    setSelectedIds((prev) => toggleChip(prev, chipId));
+    setSelectedIds((prev) => {
+      const next = toggleChip(prev, chipId);
+      // Mobile: open right vertical preview when first chip is selected
+      if (
+        prev.length === 0 &&
+        next.length > 0 &&
+        typeof window !== 'undefined' &&
+        window.matchMedia('(max-width: 960px)').matches
+      ) {
+        setPreviewOpen(true);
+      }
+      return next;
+    });
     setActivePreset(null);
     clearTips();
   };
@@ -802,7 +814,7 @@ function App() {
               선택 프리뷰 ({selectedChips.length})
             </span>
             <span className="selection-preview-chevron" aria-hidden>
-              {previewOpen ? '▾' : '▴'}
+              {previewOpen ? '▸' : '◂'}
             </span>
           </button>
           <h2 className="section-title selection-preview-heading">선택 프리뷰</h2>
