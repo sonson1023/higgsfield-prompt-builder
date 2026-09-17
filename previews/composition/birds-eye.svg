@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200">
+  <rect width="100%" height="100%" fill="#14121c"/>
+  <rect x="12" y="12" width="296" height="176" rx="8" fill="none" stroke="#5b4b8a" stroke-width="2"/>
+  
+  <circle cx="160" cy="100" r="50" fill="none" stroke="#38bdf8" stroke-width="2"/>
+  <circle cx="160" cy="100" r="8" fill="#ff4d8d"/>
+  <path d="M160 30 L160 70 M160 130 L160 170 M30 100 L70 100 M250 100 L290 100" stroke="#38bdf8" stroke-width="2"/>
+  <text x="120" y="28" fill="#38bdf8" font-size="11">TOP DOWN</text>
+
+  <text x="16" y="182" fill="#a78bfa" font-size="11" font-family="system-ui,sans-serif">birds-eye</text>
+</svg>
