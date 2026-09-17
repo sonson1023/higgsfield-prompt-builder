@@ -1083,6 +1083,73 @@ export const PRESETS: Preset[] = [
     customEn: 'faceless desk vlog, product and hands only, no face, ASMR-friendly inserts',
   },
 
+  {
+    id: 'preset-faceless-cafe-still',
+    labelKo: '얼굴없는 브이로그 · 카페',
+    mode: 'image',
+    chipIds: [
+      'sub-hands', 'sub-drink', 'sc-cafe', 'sc-window-seat', 'comp-pov', 'comp-insert',
+      'comp-overshoulder', 'lens-35', 'lit-window', 'cg-kodak-warm', 'st-iphone-raw',
+      'st-documentary', 'mood-cozy', 'q-detail', 'q-natural', 'av-warped-face',
+      'av-watermark', 'av-text',
+    ],
+    ideaKo: '얼굴 없는 카페 브이로그 스틸 — 손·커피·창가 POV',
+    customEn: 'faceless vlog still, no face visible, hands and drink only, first-person POV lifestyle photo',
+  },
+  {
+    id: 'preset-faceless-morning-still',
+    labelKo: '얼굴없는 브이로그 · 모닝',
+    mode: 'image',
+    chipIds: [
+      'sub-hands', 'sub-drink', 'sc-kitchen', 'sc-bathroom-mirror', 'comp-pov',
+      'comp-insert', 'comp-closeup', 'lens-35', 'lit-window', 'st-iphone-raw',
+      'st-documentary', 'mood-calm', 'mood-cozy', 'q-natural', 'q-clean',
+      'av-warped-face', 'av-watermark',
+    ],
+    ideaKo: '얼굴 없는 모닝 루틴 스틸 — 손·컵·거울 뒤 구도',
+    customEn: 'faceless morning routine still, no face on camera, hands and objects only',
+  },
+  {
+    id: 'preset-faceless-street-still',
+    labelKo: '얼굴없는 브이로그 · 거리',
+    mode: 'image',
+    chipIds: [
+      'sub-woman', 'pd-casual', 'pd-streetwear', 'sc-street', 'sc-hongdae',
+      'comp-back', 'comp-overshoulder', 'comp-pov', 'lens-35', 'lit-golden',
+      'st-iphone-raw', 'st-documentary', 'mood-nostalgic', 'q-natural', 'q-color',
+      'av-warped-face', 'av-watermark', 'av-logos',
+    ],
+    ideaKo: '얼굴 없는 거리 브이로그 스틸 — 뒤통수·오버숄더',
+    customEn: 'faceless street vlog still, back of head and over-shoulder only, face never shown',
+  },
+  {
+    id: 'preset-faceless-desk-still',
+    labelKo: '얼굴없는 브이로그 · 데스크',
+    mode: 'image',
+    chipIds: [
+      'sub-hands', 'sub-gadget', 'sc-minimal-bg', 'sc-library', 'comp-pov',
+      'comp-insert', 'comp-macro', 'comp-flatlay', 'lens-50', 'lit-softbox',
+      'st-minimal', 'st-iphone-raw', 'mood-calm', 'mood-asmr', 'q-clean',
+      'q-texture', 'av-clutter', 'av-warped-face', 'av-watermark',
+    ],
+    ideaKo: '얼굴 없는 데스크 브이로그 스틸 — 손과 제품만',
+    customEn: 'faceless desk vlog still, product and hands only, no face, flat lay or POV insert',
+  },
+  {
+    id: 'preset-faceless-hangang-still',
+    labelKo: '얼굴없는 브이로그 · 한강',
+    mode: 'image',
+    chipIds: [
+      'sub-hands', 'sub-drink', 'sc-hangang', 'sc-riverside', 'comp-pov', 'comp-insert',
+      'comp-wide', 'lens-35', 'lit-golden', 'lit-bluehour', 'st-iphone-raw',
+      'st-documentary', 'mood-calm', 'mood-nostalgic', 'q-natural', 'q-color',
+      'av-warped-face', 'av-watermark',
+    ],
+    ideaKo: '얼굴 없는 한강 브이로그 스틸 — 손·음료·강변 POV',
+    customEn: 'faceless Hangang vlog still, hands and drink against riverside, no face',
+  },
+
+
 ];
 
 export function chipById(id: string): Chip | undefined {
