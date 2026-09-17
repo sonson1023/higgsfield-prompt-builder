@@ -999,6 +999,64 @@ export const PRESETS: Preset[] = [
     ideaKo: '모던 공간 와이드 — 건축/인테리어 스틸',
   },
 
+  {
+    id: 'preset-faceless-cafe',
+    labelKo: '얼굴없는 브이로그 · 카페',
+    mode: 'video',
+    chipIds: [
+      'sub-hands', 'sub-drink', 'sc-cafe', 'sc-window-seat', 'comp-pov', 'comp-insert',
+      'comp-overshoulder', 'lens-35', 'lit-window', 'cg-kodak-warm', 'st-iphone-raw',
+      'st-documentary', 'mood-cozy', 'q-shorts-ready', 'act-sip-coffee', 'act-hold-rotate',
+      'cam-handheld', 'time-5s', 'time-realtime', 'aud-cafe', 'aud-vo-slot',
+      'av-warped-face', 'av-watermark', 'av-text',
+    ],
+    ideaKo: '얼굴 없는 카페 브이로그 — 손·커피·창가 POV만',
+    customEn: 'faceless vlog, no face visible, hands and drink only, first-person POV lifestyle',
+  },
+  {
+    id: 'preset-faceless-morning',
+    labelKo: '얼굴없는 브이로그 · 모닝',
+    mode: 'video',
+    chipIds: [
+      'sub-hands', 'sub-drink', 'sc-kitchen', 'sc-bathroom-mirror', 'comp-pov', 'comp-insert',
+      'comp-closeup', 'lens-35', 'lit-window', 'st-iphone-raw', 'st-documentary',
+      'mood-calm', 'mood-cozy', 'q-shorts-ready', 'act-sip', 'act-open-door',
+      'cam-handheld', 'time-5s', 'time-realtime', 'aud-ambient', 'aud-vo-slot',
+      'av-warped-face', 'av-watermark',
+    ],
+    ideaKo: '얼굴 없는 모닝 루틴 — 손·컵·거울 뒤 구도',
+    customEn: 'faceless morning routine vlog, no face on camera, hands and objects only',
+  },
+  {
+    id: 'preset-faceless-street',
+    labelKo: '얼굴없는 브이로그 · 거리',
+    mode: 'video',
+    chipIds: [
+      'sub-woman', 'pd-casual', 'pd-streetwear', 'sc-street', 'sc-market-alley',
+      'comp-back', 'comp-overshoulder', 'comp-pov', 'lens-35', 'lit-golden',
+      'st-iphone-raw', 'st-documentary', 'mood-nostalgic', 'q-shorts-ready',
+      'act-walk', 'act-turn-away', 'cam-tracking', 'cam-handheld', 'time-8s',
+      'time-realtime', 'aud-city', 'aud-footsteps', 'aud-vo-slot',
+      'av-warped-face', 'av-watermark', 'av-logos',
+    ],
+    ideaKo: '얼굴 없는 거리 브이로그 — 뒤통수·오버숄더 워킹',
+    customEn: 'faceless street vlog, back of head and over-shoulder only, face never shown',
+  },
+  {
+    id: 'preset-faceless-desk',
+    labelKo: '얼굴없는 브이로그 · 데스크',
+    mode: 'video',
+    chipIds: [
+      'sub-hands', 'sub-gadget', 'sc-minimal-bg', 'sc-library', 'comp-pov', 'comp-insert',
+      'comp-macro', 'lens-50', 'lit-softbox', 'st-minimal', 'st-iphone-raw',
+      'mood-calm', 'mood-asmr', 'q-clean', 'q-shorts-ready', 'act-hold-rotate',
+      'act-unbox', 'cam-static', 'cam-push-slow', 'time-5s', 'time-realtime',
+      'aud-breath-asmr', 'aud-vo-slot', 'av-clutter', 'av-warped-face', 'av-watermark',
+    ],
+    ideaKo: '얼굴 없는 데스크/언박싱 — 손과 제품 인서트만',
+    customEn: 'faceless desk vlog, product and hands only, no face, ASMR-friendly inserts',
+  },
+
 ];
 
 export function chipById(id: string): Chip | undefined {
