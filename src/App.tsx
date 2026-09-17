@@ -447,8 +447,8 @@ function App() {
     <div
       className={`app${selectedChips.length > 0 ? ' has-sel-preview' : ''}${previewOpen ? ' sel-preview-open' : ''}`}
     >
-      <header className="header">
-        <div className="header-inner">
+      <header className="topbar header">
+        <div className="topbar-inner header-inner">
           <div className="brand">
             <span className="brand-mark" aria-hidden />
             <div>
@@ -488,8 +488,8 @@ function App() {
         </div>
       </header>
 
-      <main className="main layout-with-preview">
-        <div className="main-col">
+      <div className="workspace layout-with-preview">
+        <main className="main-col">
           <section className="tip-banner" role="note">
             <strong>팁</strong>
             <span>
@@ -730,7 +730,7 @@ function App() {
             ))}
           </section>
 
-          <section className="previews" aria-label="프롬프트 미리보기">
+          <section className="prompt-stage previews" aria-label="프롬프트 미리보기">
             {layerTags.length > 0 && (
               <div className="layer-tags" aria-label="레이어 구조">
                 {layerTags.map((tag) => (
@@ -797,13 +797,11 @@ function App() {
               프리셋 {PRESETS.length}개
             </p>
           </footer>
-        </div>
-
-      </main>
+        </main>
 
         {/* Selection preview — desktop sticky sidebar / mobile right vertical rail */}
         <aside
-          className={`selection-preview${previewOpen ? ' is-open' : ' is-collapsed'}`}
+          className={`rail selection-preview${previewOpen ? ' is-open' : ' is-collapsed'}`}
           aria-label="선택 프리뷰"
         >
           <button
@@ -843,6 +841,9 @@ function App() {
                 onClick={exportSelection}
                 disabled={selectedChips.length === 0}
               >
+                <span className="btn-ico" aria-hidden>
+                  ↓
+                </span>
                 내보내기
               </button>
               <button
@@ -851,6 +852,9 @@ function App() {
                 onClick={clearSelection}
                 disabled={selectedChips.length === 0}
               >
+                <span className="btn-ico" aria-hidden>
+                  ⌫
+                </span>
                 삭제
               </button>
             </div>
@@ -875,7 +879,7 @@ function App() {
             </>
           )}
         </aside>
-
+      </div>
 
       <div className="sticky-bar" role="region" aria-label="빠른 복사">
         <div className="sticky-inner">
