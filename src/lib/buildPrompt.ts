@@ -5,6 +5,7 @@ import {
   categoryByChipId,
   APPEARANCE_HEAVY_CATEGORY_IDS,
 } from '../data/chips';
+import { chipConflictsWithSelected } from './chipConflicts';
 
 /** Lightweight Korean → English helpers for common creative intent words */
 const KO_TO_EN: Array<[RegExp, string]> = [
@@ -379,7 +380,7 @@ export function buildPrompt(input: BuildInput): BuildResult {
   return { imagePrompt, videoPrompt, primary };
 }
 
-/** Toggle helper respecting exclusive categories */
+/** Toggle helper respecting exclusive categories + conflict groups */
 export function toggleChip(
   selectedIds: string[],
   chipId: string,
@@ -390,6 +391,11 @@ export function toggleChip(
   const isSelected = selectedIds.includes(chipId);
   if (isSelected) {
     return selectedIds.filter((id) => id !== chipId);
+  }
+
+  // Hard block: conflicting chip already selected — do not add
+  if (chipConflictsWithSelected(chipId, selectedIds)) {
+    return selectedIds;
   }
 
   if (cat.exclusive) {

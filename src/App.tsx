@@ -49,12 +49,16 @@ import {
   switchToVideoKeepingShared,
   activeLayerTags,
 } from './lib/buildPrompt';
+import {
+  getBlockedChipIds,
+  blockingSelectedLabels,
+} from './lib/chipConflicts';
 import './App.css';
 
 const MODE_TABS: { id: Mode; label: string; hint: string }[] = [
-  { id: 'image', label: '이미지', hint: 'Popcorn / 스틸 · 키프레임' },
+  { id: 'image', label: '이미지', hint: '사진 · 키프레임' },
   { id: 'video', label: '영상', hint: 'Seedance / Kling / DoP I2V' },
-  { id: 'character', label: '캐릭터 베이스', hint: '스튜디오 포트레이트 스타터' },
+  { id: 'character', label: '캐릭터', hint: '캐릭터 기본 컷' },
 ];
 
 const FAV_KEY = 'hfpb-favorites-v1';
@@ -200,6 +204,14 @@ function App() {
     return map;
   }, [selectedIds]);
 
+  const blockedChipIds = useMemo(
+    () => getBlockedChipIds(selectedIds),
+    [selectedIds],
+  );
+
+  const canCopyPrompt = missingRequired.length === 0;
+
+
   const showToast = useCallback((msg: string) => {
     setToast(msg);
   }, []);
@@ -285,22 +297,22 @@ function App() {
     setCustomEn('');
     setActivePreset(null);
     setChipQuery('');
-    showToast('전체 초기화됨');
+    showToast('초기화했어');
   };
 
   const clearSelection = () => {
     if (selectedIds.length === 0) {
-      showToast('삭제할 선택이 없습니다');
+      showToast('지울 게 없어');
       return;
     }
     setSelectedIds([]);
     setActivePreset(null);
-    showToast('선택 프리뷰 삭제됨');
+    showToast('선택 지웠어');
   };
 
   const exportSelection = () => {
     if (selectedChips.length === 0 && !result.primary.trim()) {
-      showToast('내보낼 선택이 없습니다');
+      showToast('내보낼 게 없어');
       return;
     }
     const chipLines = selectedChips
@@ -334,7 +346,7 @@ function App() {
     a.remove();
     URL.revokeObjectURL(url);
     void navigator.clipboard?.writeText(result.primary || body).catch(() => {});
-    showToast('내보내기 완료 (파일 + 복사)');
+    showToast('파일로 내보내고 복사했어');
   };
 
   const applyPreset = (preset: Preset) => {
@@ -364,8 +376,14 @@ function App() {
   };
 
   const copyText = async (text: string, label: string) => {
+    if (!canCopyPrompt) {
+      showToast(
+        `필수 먼저 골라줘: ${missingRequired.map((c) => c.labelKo).join(', ')}`,
+      );
+      return;
+    }
     if (!text.trim()) {
-      showToast('복사할 프롬프트가 비어 있습니다');
+      showToast('복사할 문구가 비어 있어');
       return;
     }
     try {
@@ -387,12 +405,12 @@ function App() {
   const starFavorite = () => {
     const text = result.primary.trim();
     if (!text) {
-      showToast('저장할 프롬프트가 비어 있습니다');
+      showToast('저장할 문구가 비어 있어');
       return;
     }
     setFavorites((prev) => {
       if (prev.some((f) => f.text === text)) {
-        showToast('이미 즐겨찾기에 있음');
+        showToast('이미 즐겨찾기에 있어');
         return prev;
       }
       const entry: StoredPrompt = {
@@ -402,14 +420,14 @@ function App() {
         label: ideaKo.trim() || undefined,
         createdAt: Date.now(),
       };
-      showToast('즐겨찾기 저장됨');
+      showToast('즐겨찾기에 넣었어');
       return [entry, ...prev];
     });
   };
 
   const deleteFavorite = (id: string) => {
     setFavorites((prev) => prev.filter((f) => f.id !== id));
-    showToast('즐겨찾기 삭제됨');
+    showToast('즐겨찾기에서 지웠어');
   };
 
   const loadStored = (item: StoredPrompt) => {
@@ -418,7 +436,7 @@ function App() {
     setIdeaKo('');
     setSelectedIds([]);
     setActivePreset(null);
-    showToast('저장된 프롬프트 불러옴 (커스텀 필드)');
+    showToast('저장해 둔 문구 불러왔어');
   };
 
   const switchKeyframeToVideo = () => {
@@ -426,7 +444,7 @@ function App() {
     setSelectedIds((prev) => switchToVideoKeepingShared(prev));
     setActivePreset(null);
     clearTips();
-    showToast('키프레임 → 영상: 외형 칩 정리, 공유 칩 유지');
+    showToast('영상으로 바꿨어. 외형 칩은 정리했고 공통 칩은 남겼어');
   };
 
   const showChipTip = (
@@ -522,8 +540,8 @@ function App() {
           <section className="tip-banner" role="note">
             <strong>팁</strong>
             <span>
-              이미지 먼저 생성 → 영상은 동작·카메라·타이밍만 짧게. 칩에
-              마우스를 올리면 미리보기가 뜹니다. <kbd>/</kbd> 칩 검색.
+              사진 먼저 만들고, 영상은 동작·카메라·길이만 짧게. 칩에
+              마우스를 올리면 미리보기가 떠. <kbd>/</kbd> 로 칩 검색.
             </span>
           </section>
 
@@ -629,13 +647,13 @@ function App() {
               {mode === 'video'
                 ? '영상 프리셋'
                 : mode === 'character'
-                  ? '캐릭터 베이스 프리셋'
+                  ? '캐릭터 프리셋'
                   : '이미지 프리셋'}
               <span className="preset-count"> {visiblePresets.length}</span>
             </h2>
             <div className="preset-row">
               {visiblePresets.length === 0 && (
-                <p className="empty-filter">이 모드용 프리셋이 없습니다</p>
+                <p className="empty-filter">이 탭용 프리셋 없음</p>
               )}
               {visiblePresets.map((p) => (
                 <button
@@ -660,12 +678,12 @@ function App() {
           <section className="free-text">
             <div className="field">
               <label htmlFor="idea">
-                핵심 아이디어 (한국어 OK → 영문 조합)
+                아이디어 (한글 돼. 영어로 섞어 줄게)
               </label>
               <textarea
                 id="idea"
                 rows={2}
-                placeholder="예: 골든아워 루프탑에서 시네마틱 인물 컷"
+                placeholder="예: 노을 질 때 루프탑, 영화 같은 인물 컷"
                 value={ideaKo}
                 onChange={(e) => {
                   setIdeaKo(e.target.value);
@@ -673,11 +691,11 @@ function App() {
                 }}
               />
               {ideaPreview && ideaKo !== ideaPreview && (
-                <p className="idea-preview">영문 해석: {ideaPreview}</p>
+                <p className="idea-preview">영어로는: {ideaPreview}</p>
               )}
             </div>
             <div className="field">
-              <label htmlFor="custom">커스텀 추가 문구 (영어 권장)</label>
+              <label htmlFor="custom">추가로 붙일 영어 문구</label>
               <textarea
                 id="custom"
                 rows={2}
@@ -702,7 +720,7 @@ function App() {
                 id="chip-filter"
                 type="search"
                 className="chip-search-input"
-                placeholder="필터: 칩 검색 (라벨 · 영어 · / 단축키)"
+                placeholder="칩 찾기 (한글·영어, / 단축키)"
                 value={chipQuery}
                 onChange={(e) => setChipQuery(e.target.value)}
                 autoComplete="off"
@@ -735,7 +753,7 @@ function App() {
 
             <section className="chips-panel" aria-label="칩 카테고리">
               {filteredCategories.length === 0 && (
-                <p className="empty-filter">검색 결과가 없습니다</p>
+                <p className="empty-filter">검색 결과 없음</p>
               )}
               {filteredCategories.map((cat) => {
                 const isRequired = !!cat.required?.includes(mode);
@@ -753,34 +771,60 @@ function App() {
                       <span className="badge badge-required">필수</span>
                     )}
                     {cat.exclusive && (
-                      <span className="badge">단일 선택</span>
+                      <span className="badge">하나만</span>
                     )}
                     {cat.required?.includes(mode) &&
                       !selectedByCategory.has(cat.id) && (
-                        <span className="badge badge-missing">미선택</span>
+                        <span className="badge badge-missing">아직</span>
                       )}
                   </div>
                   <div className="chip-grid">
                     {cat.chips.map((chip) => {
-                      const on = selectedIds.includes(chip.id);
-                      return (
-                        <button
-                          key={chip.id}
-                          type="button"
-                          className={`chip ${on ? 'selected' : ''}`}
-                          aria-pressed={on}
-                          title={chip.valueEn}
-                          onClick={() => onToggle(chip.id)}
-                          onMouseEnter={(e) => showChipTip(e, chip, cat)}
-                          onMouseLeave={() => setHoverPreview(null)}
-                          onFocus={(e) => showChipTip(e, chip, cat)}
-                          onBlur={() => setHoverPreview(null)}
-                        >
-                          <ChipThumb chip={chip} catId={cat.id} tiny />
-                          <span>{chip.labelKo}</span>
-                        </button>
-                      );
-                    })}
+                    const on = selectedIds.includes(chip.id);
+                    const blocked = !on && blockedChipIds.has(chip.id);
+                    const blockBy = blocked
+                      ? blockingSelectedLabels(
+                          chip.id,
+                          selectedIds,
+                          (id) => chipById(id)?.labelKo ?? id,
+                        )
+                      : [];
+                    return (
+                      <button
+                        key={chip.id}
+                        type="button"
+                        className={`chip${on ? ' selected' : ''}${blocked ? ' is-blocked' : ''}`}
+                        aria-pressed={on}
+                        aria-disabled={blocked || undefined}
+                        disabled={blocked}
+                        title={
+                          blocked
+                            ? `상충: ${blockBy.join(', ')} 때문에 고를 수 없어`
+                            : chip.valueEn
+                        }
+                        onClick={() => {
+                          if (blocked) {
+                            showToast(
+                              `상충돼서 못 골라: ${blockBy.join(', ')}`,
+                            );
+                            return;
+                          }
+                          onToggle(chip.id);
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!blocked) showChipTip(e, chip, cat);
+                        }}
+                        onMouseLeave={() => setHoverPreview(null)}
+                        onFocus={(e) => {
+                          if (!blocked) showChipTip(e, chip, cat);
+                        }}
+                        onBlur={() => setHoverPreview(null)}
+                      >
+                        <ChipThumb chip={chip} catId={cat.id} tiny />
+                        <span>{chip.labelKo}</span>
+                      </button>
+                    );
+                  })}
                   </div>
                 </div>
               );
@@ -789,7 +833,7 @@ function App() {
 
               {missingRequired.length > 0 && (
                 <div className="required-hint" role="status">
-                  <span className="required-hint-label">필수 미선택</span>
+                  <span className="required-hint-label">아직 안 고른 필수</span>
                   <span className="required-hint-list">
                     {missingRequired.map((c) => c.labelKo).join(' · ')}
                   </span>
@@ -826,7 +870,7 @@ function App() {
               )}
               {selectedChips.length === 0 ? (
                 <p className="selection-empty">
-                  칩을 선택하면 여기에 미리보기가 모입니다
+                  칩 고르면 여기 미리보기가 모여
                 </p>
               ) : (
                 <>
@@ -891,32 +935,44 @@ function App() {
               <>
                 <PromptPanel
                   title="이미지 프롬프트"
-                  subtitle="키프레임 / Popcorn용 (참고)"
+                  subtitle="키프레임·이미지용"
                   text={result.imagePrompt}
                   onCopy={() =>
                     copyText(result.imagePrompt, '이미지 프롬프트')
                   }
                   onStar={starFavorite}
+                  copyDisabled={!canCopyPrompt}
+                  copyHint={
+                    !canCopyPrompt
+                      ? `필수 먼저: ${missingRequired.map((c) => c.labelKo).join(', ')}`
+                      : undefined
+                  }
                 />
                 <PromptPanel
                   title="영상 모션 프롬프트"
-                  subtitle="I2V · 동작·카메라 중심 · 블록 포맷"
+                  subtitle="영상용 · 동작·카메라 위주"
                   text={result.videoPrompt}
                   accent
                   onCopy={() =>
                     copyText(result.videoPrompt, '영상 프롬프트')
                   }
                   onStar={starFavorite}
+                  copyDisabled={!canCopyPrompt}
+                  copyHint={
+                    !canCopyPrompt
+                      ? `필수 먼저: ${missingRequired.map((c) => c.labelKo).join(', ')}`
+                      : undefined
+                  }
                 />
               </>
             ) : (
               <PromptPanel
                 title={
                   mode === 'character'
-                    ? '캐릭터 베이스 프롬프트'
+                    ? '캐릭터 프롬프트'
                     : '이미지 프롬프트'
                 }
-                subtitle="Higgsfield 이미지 생성용 · 영어"
+                subtitle="Higgsfield에 붙일 영어 문구"
                 text={result.imagePrompt}
                 accent
                 onCopy={() =>
@@ -928,14 +984,20 @@ function App() {
                   )
                 }
                 onStar={starFavorite}
+                  copyDisabled={!canCopyPrompt}
+                  copyHint={
+                    !canCopyPrompt
+                      ? `필수 먼저: ${missingRequired.map((c) => c.labelKo).join(', ')}`
+                      : undefined
+                  }
               />
             )}
           </section>
 
           <footer className="footer">
             <p>
-              유명인·브랜드 로고·IP는 칩/출력에 포함하지 않습니다. 생성
-              결과는 higgsfield.ai에 직접 붙여넣어 사용하세요.
+              유명인·브랜드 로고·IP는 넣지 않아. 나온 문구는 higgsfield.ai에
+              그대로 붙여 쓰면 돼.
             </p>
             <p className="meta">
               선택 {selectedIds.length}개 · 카테고리{' '}
@@ -965,6 +1027,12 @@ function App() {
           <button
             type="button"
             className="btn primary sticky-copy"
+            disabled={!canCopyPrompt || !result.primary.trim()}
+            title={
+              !canCopyPrompt
+                ? `필수 먼저: ${missingRequired.map((c) => c.labelKo).join(', ')}`
+                : undefined
+            }
             onClick={() => copyText(result.primary, primaryLabel)}
           >
             {primaryLabel} 복사
@@ -1101,6 +1169,8 @@ function PromptPanel({
   onCopy,
   onStar,
   accent,
+  copyDisabled,
+  copyHint,
 }: {
   title: string;
   subtitle: string;
@@ -1108,6 +1178,8 @@ function PromptPanel({
   onCopy: () => void;
   onStar?: () => void;
   accent?: boolean;
+  copyDisabled?: boolean;
+  copyHint?: string;
 }) {
   return (
     <div className={`prompt-panel ${accent ? 'accent' : ''}`}>
@@ -1128,13 +1200,22 @@ function PromptPanel({
               ★
             </button>
           )}
-          <button type="button" className="btn primary" onClick={onCopy}>
+          <button
+            type="button"
+            className="btn primary"
+            onClick={onCopy}
+            disabled={!!copyDisabled || !text.trim()}
+            title={copyDisabled ? copyHint : undefined}
+          >
             복사
           </button>
         </div>
       </div>
+      {copyDisabled && copyHint && (
+        <p className="copy-gate-hint">{copyHint}</p>
+      )}
       <pre className="prompt-body">
-        {text || '칩을 선택하거나 아이디어를 입력하세요…'}
+        {text || '칩을 고르거나 아이디어를 적어 봐…'}
       </pre>
     </div>
   );
