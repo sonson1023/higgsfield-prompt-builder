@@ -15,6 +15,8 @@ export interface ChipCategory {
   labelKo: string;
   /** single-select within category when true */
   exclusive?: boolean;
+  /** modes where at least one chip in this category must be selected */
+  required?: Mode[];
   modes: Mode[];
   chips: Chip[];
 }
@@ -32,6 +34,7 @@ export const CATEGORIES: ChipCategory[] = [
   {
     id: 'subject',
     labelKo: '주제유형',
+    required: ['image', 'video', 'character'],
     modes: ['image', 'video', 'character'],
     chips: [
       { id: 'sub-woman', labelKo: '여성', valueEn: 'a young woman' },
@@ -101,6 +104,7 @@ export const CATEGORIES: ChipCategory[] = [
     id: 'pose',
     labelKo: '자세',
     exclusive: true,
+    required: ['image', 'character'],
     modes: ['image', 'video', 'character'],
     chips: [
       { id: 'pose-stand-straight', labelKo: '바로 서기', valueEn: 'standing straight pose, upright posture, feet together' },
@@ -132,6 +136,7 @@ export const CATEGORIES: ChipCategory[] = [
   {
     id: 'scene',
     labelKo: '장면/장소',
+    required: ['image', 'character'],
     modes: ['image', 'video', 'character'],
     chips: [
       { id: 'sc-studio', labelKo: '스튜디오', valueEn: 'clean photography studio' },
@@ -205,6 +210,7 @@ export const CATEGORIES: ChipCategory[] = [
   {
     id: 'composition',
     labelKo: '구도/샷',
+    required: ['image', 'video', 'character'],
     modes: ['image', 'video', 'character'],
     chips: [
       { id: 'comp-ecu', labelKo: '익스트림 클로즈업', valueEn: 'extreme close-up on eyes or detail' },
@@ -436,6 +442,7 @@ export const CATEGORIES: ChipCategory[] = [
   {
     id: 'action',
     labelKo: '동작',
+    required: ['video'],
     modes: ['video'],
     chips: [
       { id: 'act-walk', labelKo: '걷기', valueEn: 'walks forward slowly' },
@@ -474,6 +481,7 @@ export const CATEGORIES: ChipCategory[] = [
     id: 'cameraMove',
     labelKo: '카메라무브',
     exclusive: true,
+    required: ['video'],
     modes: ['video'],
     chips: [
       { id: 'cam-dolly-in', labelKo: '돌리 인', valueEn: 'slow dolly in' },
@@ -504,6 +512,7 @@ export const CATEGORIES: ChipCategory[] = [
     id: 'timing',
     labelKo: '타이밍 (길이)',
     exclusive: true,
+    required: ['video'],
     modes: ['video'],
     chips: [
       { id: 'time-3s', labelKo: '3초', valueEn: '3 second clip' },

@@ -176,6 +176,30 @@ function App() {
       .filter((cat) => cat.chips.length > 0);
   }, [visibleCategories, chipQuery]);
 
+  const requiredCategories = useMemo(
+    () =>
+      visibleCategories.filter(
+        (c) => c.required?.includes(mode) && c.chips.length > 0,
+      ),
+    [visibleCategories, mode],
+  );
+
+  const missingRequired = useMemo(() => {
+    const selected = new Set(selectedIds);
+    return requiredCategories.filter(
+      (c) => !c.chips.some((chip) => selected.has(chip.id)),
+    );
+  }, [requiredCategories, selectedIds]);
+
+  const selectedByCategory = useMemo(() => {
+    const map = new Set<string>();
+    for (const id of selectedIds) {
+      const cat = categoryByChipId(id);
+      if (cat) map.add(cat.id);
+    }
+    return map;
+  }, [selectedIds]);
+
   const showToast = useCallback((msg: string) => {
     setToast(msg);
   }, []);
@@ -713,13 +737,28 @@ function App() {
               {filteredCategories.length === 0 && (
                 <p className="empty-filter">검색 결과가 없습니다</p>
               )}
-              {filteredCategories.map((cat) => (
-                <div key={cat.id} className="category">
+              {filteredCategories.map((cat) => {
+                const isRequired = !!cat.required?.includes(mode);
+                const isMissing =
+                  isRequired && !selectedByCategory.has(cat.id);
+                return (
+                <div
+                  key={cat.id}
+                  className={`category${isRequired ? ' is-required' : ''}${isMissing ? ' is-missing' : ''}`}
+                  data-required={isRequired ? 'true' : undefined}
+                >
                   <div className="category-head">
                     <h3>{cat.labelKo}</h3>
+                    {cat.required?.includes(mode) && (
+                      <span className="badge badge-required">필수</span>
+                    )}
                     {cat.exclusive && (
                       <span className="badge">단일 선택</span>
                     )}
+                    {cat.required?.includes(mode) &&
+                      !selectedByCategory.has(cat.id) && (
+                        <span className="badge badge-missing">미선택</span>
+                      )}
                   </div>
                   <div className="chip-grid">
                     {cat.chips.map((chip) => {
@@ -744,8 +783,18 @@ function App() {
                     })}
                   </div>
                 </div>
-              ))}
+              );
+              })}
             </section>
+
+              {missingRequired.length > 0 && (
+                <div className="required-hint" role="status">
+                  <span className="required-hint-label">필수 미선택</span>
+                  <span className="required-hint-list">
+                    {missingRequired.map((c) => c.labelKo).join(' · ')}
+                  </span>
+                </div>
+              )}
             </div>
             <aside
               className={`rail selection-preview${previewOpen ? ' is-open' : ' is-collapsed'}`}
