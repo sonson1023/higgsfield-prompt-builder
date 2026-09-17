@@ -123,6 +123,11 @@ function App() {
     [mode],
   );
 
+  const visiblePresets = useMemo(
+    () => PRESETS.filter((p) => p.mode === mode),
+    [mode],
+  );
+
   const result = useMemo(
     () => buildPrompt({ mode, selectedIds, ideaKo, customEn }),
     [mode, selectedIds, ideaKo, customEn],
@@ -488,7 +493,7 @@ function App() {
         </div>
       </header>
 
-      <div className="workspace layout-with-preview">
+      <div className="workspace">
         <main className="main-col">
           <section className="tip-banner" role="note">
             <strong>팁</strong>
@@ -596,9 +601,19 @@ function App() {
           </section>
 
           <section className="presets" aria-label="프리셋">
-            <h2 className="section-title">프리셋</h2>
+            <h2 className="section-title">
+              {mode === 'video'
+                ? '영상 프리셋'
+                : mode === 'character'
+                  ? '캐릭터 베이스 프리셋'
+                  : '이미지 프리셋'}
+              <span className="preset-count"> {visiblePresets.length}</span>
+            </h2>
             <div className="preset-row">
-              {PRESETS.map((p) => (
+              {visiblePresets.length === 0 && (
+                <p className="empty-filter">이 모드용 프리셋이 없습니다</p>
+              )}
+              {visiblePresets.map((p) => (
                 <button
                   key={p.id}
                   type="button"
@@ -652,83 +667,166 @@ function App() {
             </div>
           </section>
 
-          <section className="chip-search" aria-label="칩 검색">
-            <label htmlFor="chip-filter" className="sr-only">
-              필터: 칩 검색
-            </label>
-            <input
-              ref={searchRef}
-              id="chip-filter"
-              type="search"
-              className="chip-search-input"
-              placeholder="필터: 칩 검색 (라벨 · 영어 · / 단축키)"
-              value={chipQuery}
-              onChange={(e) => setChipQuery(e.target.value)}
-              autoComplete="off"
-            />
-          </section>
-
-          {selectedChips.length > 0 && (
-            <section className="selected-strip" aria-label="선택된 칩">
-              <h2 className="section-title">선택됨</h2>
-              <div className="selected-pills">
-                {selectedChips.map(({ chip, cat }) => (
-                  <button
-                    key={chip.id}
-                    type="button"
-                    className="selected-pill"
-                    title={`${cat.labelKo}: ${chip.valueEn}`}
-                    onClick={() => onToggle(chip.id)}
-                    aria-label={`${chip.labelKo} 제거`}
-                  >
-                    <span className="pill-cat">{cat.labelKo}</span>
-                    {chip.labelKo}
-                    <span className="pill-x" aria-hidden>
-                      ×
-                    </span>
-                  </button>
-                ))}
-              </div>
+          <div className="chip-stage">
+            <div className="chip-picker">
+            <section className="chip-search" aria-label="칩 검색">
+              <label htmlFor="chip-filter" className="sr-only">
+                필터: 칩 검색
+              </label>
+              <input
+                ref={searchRef}
+                id="chip-filter"
+                type="search"
+                className="chip-search-input"
+                placeholder="필터: 칩 검색 (라벨 · 영어 · / 단축키)"
+                value={chipQuery}
+                onChange={(e) => setChipQuery(e.target.value)}
+                autoComplete="off"
+              />
             </section>
-          )}
 
-          <section className="chips-panel" aria-label="칩 카테고리">
-            {filteredCategories.length === 0 && (
-              <p className="empty-filter">검색 결과가 없습니다</p>
+            {selectedChips.length > 0 && (
+              <section className="selected-strip" aria-label="선택된 칩">
+                <h2 className="section-title">선택됨</h2>
+                <div className="selected-pills">
+                  {selectedChips.map(({ chip, cat }) => (
+                    <button
+                      key={chip.id}
+                      type="button"
+                      className="selected-pill"
+                      title={`${cat.labelKo}: ${chip.valueEn}`}
+                      onClick={() => onToggle(chip.id)}
+                      aria-label={`${chip.labelKo} 제거`}
+                    >
+                      <span className="pill-cat">{cat.labelKo}</span>
+                      {chip.labelKo}
+                      <span className="pill-x" aria-hidden>
+                        ×
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </section>
             )}
-            {filteredCategories.map((cat) => (
-              <div key={cat.id} className="category">
-                <div className="category-head">
-                  <h3>{cat.labelKo}</h3>
-                  {cat.exclusive && (
-                    <span className="badge">단일 선택</span>
-                  )}
+
+            <section className="chips-panel" aria-label="칩 카테고리">
+              {filteredCategories.length === 0 && (
+                <p className="empty-filter">검색 결과가 없습니다</p>
+              )}
+              {filteredCategories.map((cat) => (
+                <div key={cat.id} className="category">
+                  <div className="category-head">
+                    <h3>{cat.labelKo}</h3>
+                    {cat.exclusive && (
+                      <span className="badge">단일 선택</span>
+                    )}
+                  </div>
+                  <div className="chip-grid">
+                    {cat.chips.map((chip) => {
+                      const on = selectedIds.includes(chip.id);
+                      return (
+                        <button
+                          key={chip.id}
+                          type="button"
+                          className={`chip ${on ? 'selected' : ''}`}
+                          aria-pressed={on}
+                          title={chip.valueEn}
+                          onClick={() => onToggle(chip.id)}
+                          onMouseEnter={(e) => showChipTip(e, chip, cat)}
+                          onMouseLeave={() => setHoverPreview(null)}
+                          onFocus={(e) => showChipTip(e, chip, cat)}
+                          onBlur={() => setHoverPreview(null)}
+                        >
+                          <ChipThumb chip={chip} catId={cat.id} tiny />
+                          <span>{chip.labelKo}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="chip-grid">
-                  {cat.chips.map((chip) => {
-                    const on = selectedIds.includes(chip.id);
-                    return (
+              ))}
+            </section>
+            </div>
+            <aside
+              className={`rail selection-preview${previewOpen ? ' is-open' : ' is-collapsed'}`}
+              aria-label="선택 프리뷰"
+            >
+              <button
+                type="button"
+                className="selection-preview-toggle"
+                aria-expanded={previewOpen}
+                onClick={() => setPreviewOpen((v) => !v)}
+              >
+                <span className="section-title" style={{ margin: 0 }}>
+                  선택 프리뷰 ({selectedChips.length})
+                </span>
+                <span className="selection-preview-chevron" aria-hidden>
+                  {previewOpen ? '▸' : '◂'}
+                </span>
+              </button>
+              <h2 className="section-title selection-preview-heading">선택 프리뷰</h2>
+              {lastSelectedChip && (
+                <div className="selection-hero" aria-label="최근 선택 미리보기">
+                  <ChipThumb chip={lastSelectedChip.chip} catId={lastSelectedChip.cat.id} />
+                  <div className="selection-hero-meta">
+                    <span className="selection-hero-cat">{lastSelectedChip.cat.labelKo}</span>
+                    <span className="selection-hero-label">{lastSelectedChip.chip.labelKo}</span>
+                    <span className="selection-hero-en">{lastSelectedChip.chip.valueEn}</span>
+                  </div>
+                </div>
+              )}
+              {selectedChips.length === 0 ? (
+                <p className="selection-empty">
+                  칩을 선택하면 여기에 미리보기가 모입니다
+                </p>
+              ) : (
+                <>
+                <div className="selection-preview-actions">
+                  <button
+                    type="button"
+                    className="btn ghost selection-export"
+                    onClick={exportSelection}
+                    disabled={selectedChips.length === 0}
+                  >
+                    <span className="btn-ico" aria-hidden>
+                      ↓
+                    </span>
+                    내보내기
+                  </button>
+                  <button
+                    type="button"
+                    className="btn ghost selection-delete"
+                    onClick={clearSelection}
+                    disabled={selectedChips.length === 0}
+                  >
+                    <span className="btn-ico" aria-hidden>
+                      ⌫
+                    </span>
+                    삭제
+                  </button>
+                </div>
+                <div className="selection-grid">
+                  {selectedChips.map(({ chip, cat }) => (
+                    <div key={chip.id} className="selection-card">
                       <button
-                        key={chip.id}
                         type="button"
-                        className={`chip ${on ? 'selected' : ''}`}
-                        aria-pressed={on}
-                        title={chip.valueEn}
+                        className="selection-remove"
+                        onMouseDown={(e) => e.preventDefault()}
                         onClick={() => onToggle(chip.id)}
-                        onMouseEnter={(e) => showChipTip(e, chip, cat)}
-                        onMouseLeave={() => setHoverPreview(null)}
-                        onFocus={(e) => showChipTip(e, chip, cat)}
-                        onBlur={() => setHoverPreview(null)}
+                        title={`${chip.labelKo} 삭제`}
+                        aria-label={`${chip.labelKo} 삭제`}
                       >
-                        <ChipThumb chip={chip} catId={cat.id} tiny />
-                        <span>{chip.labelKo}</span>
+                        ×
                       </button>
-                    );
-                  })}
+                      <ChipThumb chip={chip} catId={cat.id} />
+                      <span className="selection-label">{chip.labelKo}</span>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            ))}
-          </section>
+                </>
+              )}
+            </aside>
+          </div>
 
           <section className="prompt-stage previews" aria-label="프롬프트 미리보기">
             {layerTags.length > 0 && (
@@ -794,92 +892,12 @@ function App() {
               선택 {selectedIds.length}개 · 카테고리{' '}
               {visibleCategories.length}개 · 칩 데이터{' '}
               {CATEGORIES.reduce((n, c) => n + c.chips.length, 0)}개 ·
-              프리셋 {PRESETS.length}개
+              프리셋 {visiblePresets.length}/{PRESETS.length}개
             </p>
           </footer>
         </main>
 
-        {/* Selection preview — desktop sticky sidebar / mobile right vertical rail */}
-        <aside
-          className={`rail selection-preview${previewOpen ? ' is-open' : ' is-collapsed'}`}
-          aria-label="선택 프리뷰"
-        >
-          <button
-            type="button"
-            className="selection-preview-toggle"
-            aria-expanded={previewOpen}
-            onClick={() => setPreviewOpen((v) => !v)}
-          >
-            <span className="section-title" style={{ margin: 0 }}>
-              선택 프리뷰 ({selectedChips.length})
-            </span>
-            <span className="selection-preview-chevron" aria-hidden>
-              {previewOpen ? '▸' : '◂'}
-            </span>
-          </button>
-          <h2 className="section-title selection-preview-heading">선택 프리뷰</h2>
-          {lastSelectedChip && (
-            <div className="selection-hero" aria-label="최근 선택 미리보기">
-              <ChipThumb chip={lastSelectedChip.chip} catId={lastSelectedChip.cat.id} />
-              <div className="selection-hero-meta">
-                <span className="selection-hero-cat">{lastSelectedChip.cat.labelKo}</span>
-                <span className="selection-hero-label">{lastSelectedChip.chip.labelKo}</span>
-                <span className="selection-hero-en">{lastSelectedChip.chip.valueEn}</span>
-              </div>
-            </div>
-          )}
-          {selectedChips.length === 0 ? (
-            <p className="selection-empty">
-              칩을 선택하면 여기에 미리보기가 모입니다
-            </p>
-          ) : (
-            <>
-            <div className="selection-preview-actions">
-              <button
-                type="button"
-                className="btn ghost selection-export"
-                onClick={exportSelection}
-                disabled={selectedChips.length === 0}
-              >
-                <span className="btn-ico" aria-hidden>
-                  ↓
-                </span>
-                내보내기
-              </button>
-              <button
-                type="button"
-                className="btn ghost selection-delete"
-                onClick={clearSelection}
-                disabled={selectedChips.length === 0}
-              >
-                <span className="btn-ico" aria-hidden>
-                  ⌫
-                </span>
-                삭제
-              </button>
-            </div>
-            <div className="selection-grid">
-              {selectedChips.map(({ chip, cat }) => (
-                <div key={chip.id} className="selection-card">
-                  <button
-                    type="button"
-                    className="selection-remove"
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => onToggle(chip.id)}
-                    title={`${chip.labelKo} 삭제`}
-                    aria-label={`${chip.labelKo} 삭제`}
-                  >
-                    ×
-                  </button>
-                  <ChipThumb chip={chip} catId={cat.id} />
-                  <span className="selection-label">{chip.labelKo}</span>
-                </div>
-              ))}
-            </div>
-            </>
-          )}
-        </aside>
-      </div>
+        {/* Selection preview — desktop sticky sidebar / mobile right vertical rail */}      </div>
 
       <div className="sticky-bar" role="region" aria-label="빠른 복사">
         <div className="sticky-inner">

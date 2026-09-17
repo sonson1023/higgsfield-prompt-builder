@@ -929,6 +929,76 @@ export const PRESETS: Preset[] = [
     ideaKo: '석양 들판 위 드론 상승 — 성스러운 시네마틱 와이드',
   },
 
+  {
+    id: 'preset-character-street',
+    labelKo: '캐릭터 스트릿',
+    mode: 'character',
+    chipIds: [
+      'sub-woman', 'pd-east-asian', 'pd-streetwear', 'pd-confident', 'pd-age-20s',
+      'sc-street', 'comp-full', 'comp-cowboy', 'lens-35', 'lit-neon',
+      'st-photoreal', 'st-street', 'mood-energetic', 'q-detail', 'q-professional',
+      'av-distort', 'av-warped-face', 'av-fingers',
+    ],
+    ideaKo: '일관된 캐릭터 베이스 — 네온 거리 스트릿웨어 전신',
+  },
+  {
+    id: 'preset-character-bust',
+    labelKo: '캐릭터 바스트업',
+    mode: 'character',
+    chipIds: [
+      'sub-woman', 'pd-east-asian', 'pd-natural-makeup', 'pd-wavy-hair', 'pd-soft-gaze',
+      'pd-skin-glow', 'pd-neutral-face', 'sc-studio', 'comp-portrait', 'comp-medium-close',
+      'lens-85', 'lens-shallow', 'lit-softbox', 'lit-rim', 'st-photoreal', 'mood-calm',
+      'q-detail', 'q-8k', 'av-plastic', 'av-warped-face',
+    ],
+    ideaKo: '캐릭터 레퍼런스용 바스트업 — 중립 표정 스튜디오',
+  },
+  {
+    id: 'preset-character-hero',
+    labelKo: '캐릭터 히어로샷',
+    mode: 'character',
+    chipIds: [
+      'sub-man', 'pd-east-asian', 'pd-confident', 'pd-intense-eyes', 'pd-age-30s',
+      'sc-rooftop', 'comp-low', 'comp-medium', 'lens-50', 'lit-golden',
+      'lit-rim', 'st-cinematic', 'st-photoreal', 'mood-dramatic', 'q-color',
+      'q-professional', 'av-distort', 'av-warped-face', 'av-fingers',
+    ],
+    ideaKo: '캐릭터 히어로 포즈 — 로우앵글 골든아워',
+  },
+  {
+    id: 'preset-product-still',
+    labelKo: '제품 스틸',
+    mode: 'image',
+    chipIds: [
+      'sub-product', 'sc-minimal-bg', 'comp-closeup', 'comp-flatlay', 'lens-50',
+      'lens-shallow', 'lit-softbox', 'st-commercial', 'st-minimal', 'mood-elegant',
+      'q-texture', 'q-clean', 'q-ad-polish', 'av-clutter', 'av-watermark', 'av-logos',
+    ],
+    ideaKo: '이커머스용 미니멀 제품 스틸컷',
+  },
+  {
+    id: 'preset-food-still',
+    labelKo: '푸드 스틸',
+    mode: 'image',
+    chipIds: [
+      'sub-food', 'sc-cafe', 'comp-overhead', 'comp-closeup', 'lens-50',
+      'lit-window', 'cg-kodak-warm', 'st-photoreal', 'mood-cozy', 'q-texture',
+      'q-detail', 'av-plastic', 'av-overexposed',
+    ],
+    ideaKo: '카페 테이블 탑뷰 푸드 스틸',
+  },
+  {
+    id: 'preset-architecture-still',
+    labelKo: '건축/공간',
+    mode: 'image',
+    chipIds: [
+      'sub-architecture', 'sub-interior', 'sc-gallery', 'comp-wide', 'comp-leading',
+      'lens-14', 'lit-window', 'lit-bluehour', 'st-minimal', 'st-photoreal',
+      'mood-calm', 'q-8k', 'q-clean', 'av-distort', 'av-watermark',
+    ],
+    ideaKo: '모던 공간 와이드 — 건축/인테리어 스틸',
+  },
+
 ];
 
 export function chipById(id: string): Chip | undefined {
