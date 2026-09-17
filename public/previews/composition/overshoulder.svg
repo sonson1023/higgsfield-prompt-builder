@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200">
+  <rect width="100%" height="100%" fill="#14121c"/>
+  <rect x="12" y="12" width="296" height="176" rx="8" fill="none" stroke="#5b4b8a" stroke-width="2"/>
+  
+  <ellipse cx="70" cy="130" rx="40" ry="55" fill="#334155"/>
+  <circle cx="70" cy="70" r="22" fill="#475569"/>
+  <rect x="130" y="50" width="150" height="100" rx="6" fill="#1e293b" stroke="#c4b5fd"/>
+  <circle cx="205" cy="100" r="16" fill="#7c5cff"/>
+
+  <text x="16" y="182" fill="#a78bfa" font-size="11" font-family="system-ui,sans-serif">overshoulder</text>
+</svg>
