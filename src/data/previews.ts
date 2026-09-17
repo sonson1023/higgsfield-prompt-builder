@@ -295,6 +295,33 @@ export const PREVIEW_BY_ID: Record<string, PreviewMeta> = {
   'sc-bathroom-mirror': { previewUrl: U('photo-1552321554-5fefe8c9ef14') },
   'sc-gallery': { previewUrl: U('photo-1536924940846-227afb31e2a5') },
 
+  // —— Korean places ——
+  'sc-hangang': { previewUrl: U('photo-1517154421773-0529f29ea451') },
+  'sc-namsan': { previewUrl: U('photo-1519501025264-65ba15a82390') },
+  'sc-hongdae': { previewUrl: U('photo-1542051841857-5f90071e7989') },
+  'sc-gangnam': { previewUrl: U('photo-1480714378408-67cf0d13bc1b') },
+  'sc-bukchon': { previewUrl: U('photo-1578662996442-48f60103fc96') },
+  'sc-palace-yard': { previewUrl: U('photo-1545569341-9eb8b30979d9') },
+  'sc-hanok-yard': { previewUrl: U('photo-1528164344705-47542687000d') },
+  'sc-hanok-teahouse': { previewUrl: U('photo-1495474472287-4d71bcdd2085') },
+  'sc-temple-kr': { previewUrl: U('photo-1493976040374-85c8e12f0c0e') },
+  'sc-euljiro': { previewUrl: U('photo-1514565131-fce0801e5785') },
+  'sc-seongsu': { previewUrl: U('photo-1521017432531-fbd92d768814') },
+  'sc-pojangmacha': { previewUrl: U('photo-1555939594-58d7cb561ad1') },
+  'sc-bunsik': { previewUrl: U('photo-1414235077428-338989a2e8c0') },
+  'sc-noraebang': { previewUrl: U('photo-1514933651103-005eec06c04b'), previewTone: 'linear-gradient(135deg,#4a044e,#7c3aed)' },
+  'sc-pcbang': { previewUrl: U('photo-1542751371-adc38448a05e'), previewTone: 'linear-gradient(135deg,#0f172a,#22d3ee)' },
+  'sc-jjimjilbang': { previewUrl: U('photo-1544161515-4ab6ce6db874'), previewTone: 'linear-gradient(135deg,#7c2d12,#fbbf24)' },
+  'sc-oktop': { previewUrl: U('photo-1560448204-e02f11c3d0e2') },
+  'sc-bus-stop-kr': { previewUrl: U('photo-1449824913935-59a10b8d2000') },
+  'sc-ktx': { previewUrl: U('photo-1474487548417-781cb71495f3') },
+  'sc-jeju-coast': { previewUrl: U('photo-1507525428034-b723cf961d3e') },
+  'sc-haeundae': { previewUrl: U('photo-1501785888041-af3ef285b470') },
+  'sc-seoul-forest': { previewUrl: U('photo-1441974231531-c6227db76b6e') },
+  'sc-night-market-kr': { previewUrl: U('photo-1555396273-367ea4eb4db5') },
+  'sc-university-kr': { previewUrl: U('photo-1470071459604-3b5ec3a7fe05') },
+
+
 
 
 
