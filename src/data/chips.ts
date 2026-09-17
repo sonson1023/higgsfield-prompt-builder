@@ -48,6 +48,7 @@ export const CATEGORIES: ChipCategory[] = [
       { id: 'sub-fashion', labelKo: '패션룩', valueEn: 'a fashion model in editorial look' },
       { id: 'sub-pet', labelKo: '반려동물', valueEn: 'a cute companion animal' },
       { id: 'sub-hands', labelKo: '손/핸드', valueEn: 'elegant hands in frame' },
+      { id: 'sub-camera-body', labelKo: '카메라 바디', valueEn: 'a compact camera body with strap' },
       { id: 'sub-child', labelKo: '아이', valueEn: 'a child (generic, non-celebrity)' },
       { id: 'sub-senior', labelKo: '시니어', valueEn: 'an elegant senior person' },
       { id: 'sub-group', labelKo: '그룹', valueEn: 'a small group of stylish people' },
@@ -131,6 +132,9 @@ export const CATEGORIES: ChipCategory[] = [
       { id: 'pose-stand-tiptoe', labelKo: '까치발 서기', valueEn: 'tiptoe standing pose' },
       { id: 'pose-stand-crossed-ankles', labelKo: '발목 꼬고 서기', valueEn: 'crossed-ankles standing pose' },
       { id: 'pose-stand-hands-face', labelKo: '얼굴 근처 손 서기', valueEn: 'hand-near-face standing pose' },
+      { id: 'pose-hands-chest-cam', labelKo: '가슴 카메라 만지기', valueEn: 'only hands visible adjusting a camera hanging on a chest strap' },
+      { id: 'pose-hands-only', labelKo: '손만 프레임', valueEn: 'hands only in frame, no face, no full body' },
+
     ],
   },
   {
@@ -245,6 +249,9 @@ export const CATEGORIES: ChipCategory[] = [
       { id: 'comp-insert', labelKo: '인서트컷', valueEn: 'insert detail cutaway shot' },
       { id: 'comp-cutaway', labelKo: '커트어웨이', valueEn: 'cutaway reaction or environment beat' },
       { id: 'comp-pov', labelKo: 'POV', valueEn: 'first-person POV framing' },
+      { id: 'comp-chest-cam-pov', labelKo: '가슴 카메라 POV', valueEn: 'chest-mounted camera POV looking straight forward, horizon centered' },
+      { id: 'comp-hands-only', labelKo: '손만 클로즈', valueEn: 'tight framing on hands only, crop out face and torso' },
+
       { id: 'comp-selfie', labelKo: '셀피 각도', valueEn: 'handheld selfie-style high angle' },
       { id: 'comp-reflection', labelKo: '반사', valueEn: 'reflection in mirror or puddle' },
       { id: 'comp-frame-in-frame', labelKo: '프레임 인 프레임', valueEn: 'frame within a frame composition' },
@@ -1203,6 +1210,21 @@ export const PRESETS: Preset[] = [
     ],
     ideaKo: '측면 서기 — 실루엣감 있는 측면 상반신',
   },
+
+  {
+    id: 'preset-chest-cam-hands',
+    labelKo: '손만 · 가슴 카메라 정면',
+    mode: 'image',
+    chipIds: [
+      'sub-hands', 'sub-camera-body', 'pose-hands-chest-cam', 'comp-chest-cam-pov',
+      'comp-hands-only', 'comp-centered', 'comp-insert', 'sc-street', 'lens-35',
+      'lit-window', 'st-iphone-raw', 'st-documentary', 'mood-calm', 'q-natural',
+      'q-detail', 'av-warped-face', 'av-watermark', 'av-fingers',
+    ],
+    ideaKo: '가슴에 건 카메라 스트랩을 손으로 만지며 정면으로 찍는 손만 나오는 컷',
+    customEn: 'first-person chest-level camera view looking straight ahead, only hands adjusting a camera on a chest strap, no face visible, centered forward framing',
+  },
+
 
 
 

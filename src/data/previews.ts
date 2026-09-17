@@ -63,6 +63,13 @@ export const PREVIEW_BY_ID: Record<string, PreviewMeta> = {
   'sub-pet': { previewUrl: U('photo-1543466835-00a7907e9de1') },
   'sub-hands': { previewUrl: U('photo-1587654780291-39c9404d746b') },
 
+  'sub-camera-body': { previewUrl: U('photo-1502920917128-1aa500764cbd') },
+  'pose-hands-chest-cam': { previewUrl: U('photo-1587654780291-39c9404d746b') },
+  'pose-hands-only': { previewUrl: U('photo-1587654780291-39c9404d746b') },
+  'comp-chest-cam-pov': { previewTone: CATEGORY_TONES.composition },
+  'comp-hands-only': { previewUrl: U('photo-1587654780291-39c9404d746b') },
+
+
   // —— Person detail ——
   'pd-east-asian': { previewUrl: U('photo-1534528741775-53994a69daeb') },
   'pd-natural-makeup': { previewUrl: U('photo-1515886657613-9f3515b0c78f') },
